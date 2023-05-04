@@ -56,7 +56,7 @@ export default {
       // title: "title",
       script: [
         {
-          src: "http://unpkg.com/tone",
+          src: "https://unpkg.com/tone",
         },
       ],
     });
