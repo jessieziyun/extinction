@@ -188,7 +188,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #info {
   top: v-bind("info.position.y");
   left: v-bind("info.position.x");

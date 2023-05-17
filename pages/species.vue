@@ -7,7 +7,9 @@
     >
       <div class="p-1" v-html="info.assessment"></div>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+    >
       <div
         v-for="species in data"
         class="mb-8 show font-serif text-xs cursor-pointer"
@@ -25,8 +27,7 @@
           {{ species.commonName ? species.commonName : species.scientificName }}
         </div>
         <div class="w-max mb-1">{{ species.redlistCategory }}</div>
-        <div class="font-mono w-max text-[10px] leading-3">
-        </div>
+        <div class="font-mono w-max text-[10px] leading-3"></div>
       </div>
     </div>
   </div>
@@ -104,7 +105,7 @@ export default {
       // names must be equal
       return 0;
     },
-    hideInfo(){
+    hideInfo() {
       // hide previously clicked div
       if (this.toHide !== "") {
         document.getElementById(this.toHide).classList.add("invisible");
@@ -114,6 +115,12 @@ export default {
       }
     },
     handleClick(event) {
+      const posX =
+        window.innerWidth - event.pageX > 400
+          ? event.pageX
+          : window.innerWidth - 400;
+      this.info.position.x = posX + "px";
+      this.info.position.y = event.pageY + "px";
       // init audio context if not started
       if (!this.startTone) {
         this.initTone();
@@ -121,7 +128,7 @@ export default {
       }
 
       // pause the countdown
-      this.clearTimeouts()
+      this.clearTimeouts();
       this.countdown = false;
 
       // display info
@@ -140,12 +147,6 @@ export default {
           ).assessment;
           this.info.show = true;
           this.toHide = divId;
-          const posX =
-            window.innerWidth - event.pageX > 400
-              ? event.pageX
-              : window.innerWidth - 400;
-          this.info.position.x = posX + "px";
-          this.info.position.y = event.pageY + "px";
         } else {
           this.clickOutside(event);
         }
@@ -154,9 +155,7 @@ export default {
     removeRandom() {
       // get a random species and hide it
       // doesn't take into account whether already hidden or not currently
-      const randomIndex = Math.floor(
-        Math.random() * this.data.length
-      );
+      const randomIndex = Math.floor(Math.random() * this.data.length);
       const id = this.data[randomIndex].assessmentId;
       const elem = document.getElementById(id);
       if (elem) document.getElementById(id).classList.add("invisible");
@@ -203,12 +202,12 @@ export default {
         }, this.timeout);
       }
     },
-    clearTimeouts(){
+    clearTimeouts() {
       let id = window.setTimeout(function () {}, 0);
       while (id--) {
         window.clearTimeout(id); // will do nothing if no timeout with id is present
       }
-    }
+    },
   },
   async mounted() {
     const { result } = await $fetch("/api/firestore/query?col=species1");
@@ -217,14 +216,14 @@ export default {
     // should update firebase. should update the code that assigns the url, actually.
     result.find((elem) => elem.commonName == "Newbery's Rove Beetle").imageUrl =
       "https://inaturalist-open-data.s3.amazonaws.com/photos/24203916/medium.jpeg";
-    
+
     this.data = result;
     this.sortData();
   },
 };
 </script>
 
-<style>
+<style scoped>
 #info {
   top: v-bind("info.position.y");
   left: v-bind("info.position.x");
